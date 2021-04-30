@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "838789936124",
+    "project_id": "time-tracker-b341d",
+    "storage_bucket": "time-tracker-b341d.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:838789936124:android:6cc57ea6b5bfc5fe11b879",
+        "android_client_info": {
+          "package_name": "com.example.time_tracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "838789936124-6jmnpoalci8jrmuatkuekc75os89maob.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCGkK-phlXu7NmhEjVIPEQ3uszKsULpzSo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "838789936124-6jmnpoalci8jrmuatkuekc75os89maob.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
