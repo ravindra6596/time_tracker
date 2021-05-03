@@ -1,7 +1,11 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:time_tracker/app/home/job/job.dart';
 import 'package:time_tracker/common_widgets/alert_dialog.dart';
+import 'package:time_tracker/common_widgets/exception_alert_dialog.dart';
 import 'package:time_tracker/services/auth.dart';
+import 'package:time_tracker/services/database.dart';
 
 class JobsPage extends StatelessWidget {
   Future<void> _signOut(BuildContext context) async {
@@ -26,7 +30,24 @@ class JobsPage extends StatelessWidget {
     }
   }
 
-  void _createJob() {}
+  Future<void> _createJob(BuildContext context) async {
+    try {
+      final database = Provider.of<Database>(context, listen: false);
+      await database.createJob(
+        Job(
+          name: 'Markeeting                                                                                                                   ',
+          ratePerHour: 10,
+        ),
+      );
+    } on FirebaseException catch (e) {
+      showExceptionAlertDialog(
+        context,
+        title: 'Operation Failed',
+        exception: e,
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,10 +67,30 @@ class JobsPage extends StatelessWidget {
           ),
         ],
       ),
+      body: _buildContents(context),
       floatingActionButton: FloatingActionButton(
-        onPressed: _createJob,
+        onPressed: () => _createJob(context),
         child: Icon(Icons.add),
       ),
     );
+  }
+
+  Widget _buildContents(BuildContext context) {
+    final database = Provider.of<Database>(context, listen: false);
+    return StreamBuilder<List<Job>>(
+        stream: database.jobsStream(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            final jobs = snapshot.data;
+            final children = jobs.map((job) => Text(job.name)).toList();
+            return ListView(
+              children: children,
+            );
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text('Some Error Occured'));
+          }
+          return Center(child: CircularProgressIndicator());
+        });
   }
 }
