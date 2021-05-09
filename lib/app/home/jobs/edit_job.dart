@@ -2,19 +2,21 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:time_tracker/app/home/models/job.dart';
+import 'package:time_tracker/common_widgets/alert_dialog.dart';
 import 'package:time_tracker/common_widgets/exception_alert_dialog.dart';
 import 'package:time_tracker/services/database.dart';
 
-class AddJob extends StatefulWidget {
-  const AddJob({Key key, @required this.database}) : super(key: key);
+class EditJob extends StatefulWidget {
+  const EditJob({Key key, @required this.database, this.job}) : super(key: key);
   final Database database;
-
-  static Future<void> show(BuildContext context) async {
+  final Job job;
+  static Future<void> show(BuildContext context, {Job job}) async {
     final database = Provider.of<Database>(context, listen: false);
     await Navigator.of(context).push(
       MaterialPageRoute(
-        builder: (context) => AddJob(
+        builder: (context) => EditJob(
           database: database,
+          job: job,
         ),
         fullscreenDialog: true,
       ),
@@ -22,13 +24,22 @@ class AddJob extends StatefulWidget {
   }
 
   @override
-  _AddJobState createState() => _AddJobState();
+  _EditJobState createState() => _EditJobState();
 }
 
-class _AddJobState extends State<AddJob> {
+class _EditJobState extends State<EditJob> {
   final _formKey = GlobalKey<FormState>();
   String _jobName;
   int _ratePerHour;
+  @override
+  void initState() {
+    super.initState();
+    if (widget.job != null) {
+      _jobName = widget.job.name;
+      _ratePerHour = widget.job.ratePerHour;
+    }
+  }
+
   bool _validateAndSaveForm() {
     final form = _formKey.currentState;
     if (form.validate()) {
@@ -41,9 +52,28 @@ class _AddJobState extends State<AddJob> {
   void _submitJob() async {
     if (_validateAndSaveForm()) {
       try {
-        final job = Job(name: _jobName, ratePerHour: _ratePerHour);
-        await widget.database.createJob(job);
-        Navigator.of(context).pop();
+        // following line display the current list of jobs from firestore
+        // get the 1st (most-up-to-date)value on stream
+        final jobs = await widget.database.jobsStream().first;
+        final allNames = jobs.map((job) => job.name).toList();
+        if (widget.job != null) {
+          allNames.remove(widget.job.name);
+        }
+        if (allNames.contains(_jobName)) {
+          showAlertDialog(context,
+              title: 'Job Name Already Used',
+              content: 'Please Choose a different Job name',
+              defaultActionText: 'Ok');
+        } else {
+          final id = widget.job?.id ?? documentIdFromCurrentDate();
+          final job = Job(
+            id: id,
+            name: _jobName,
+            ratePerHour: _ratePerHour,
+          );
+          await widget.database.setJob(job);
+          Navigator.of(context).pop();
+        }
       } on FirebaseException catch (e) {
         showExceptionAlertDialog(
           context,
@@ -59,7 +89,7 @@ class _AddJobState extends State<AddJob> {
     return Scaffold(
       appBar: AppBar(
         elevation: 2.0,
-        title: Text('New Job'),
+        title: Text(widget.job == null ? 'New Job' : 'Edit Job'),
         actions: <Widget>[
           FlatButton(
               onPressed: _submitJob,
@@ -116,17 +146,20 @@ class _AddJobState extends State<AddJob> {
     return [
       TextFormField(
         decoration: InputDecoration(labelText: 'Job Name'),
-         validator: (value) =>
-             value.isNotEmpty ? null : "Job Name can\`t be empty",
+        initialValue: _jobName,
+        textCapitalization: TextCapitalization.sentences,
+        validator: (value) =>
+            value.isNotEmpty ? null : "Job Name can\`t be empty",
         onSaved: (value) => _jobName = value,
       ),
       TextFormField(
         decoration: InputDecoration(labelText: 'Rate Per Hour'),
+        initialValue: _ratePerHour != null ? '$_ratePerHour' : null,
         keyboardType: TextInputType.numberWithOptions(
           signed: false,
           decimal: false,
         ),
-        onSaved: (value) => _ratePerHour = int.parse(value) ?? 0,
+        onSaved: (value) => _ratePerHour = int.tryParse(value) ?? 0,
       ),
     ];
   }
