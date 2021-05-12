@@ -11,6 +11,12 @@ class JobListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(job.name),
+      subtitle: Text(
+        '₹ ${job.ratePerHour.toString()}',
+        style: TextStyle(
+          color: Colors.green,
+        ),
+      ),
       trailing: Icon(Icons.chevron_right),
       onTap: onTap,
     );

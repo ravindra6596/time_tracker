@@ -6,13 +6,17 @@ import 'package:time_tracker/common_widgets/alert_dialog.dart';
 import 'package:time_tracker/common_widgets/exception_alert_dialog.dart';
 import 'package:time_tracker/services/database.dart';
 
+
 class EditJob extends StatefulWidget {
   const EditJob({Key key, @required this.database, this.job}) : super(key: key);
   final Database database;
   final Job job;
   static Future<void> show(BuildContext context, {Job job}) async {
     final database = Provider.of<Database>(context, listen: false);
-    await Navigator.of(context).push(
+    // Which navigator should I used
+    // Modal Full screen page => use  rootNavigator: true
+    // Non modal pages = > use  rootNavigator: false(or omit argument)
+    await Navigator.of(context, rootNavigator: true ).push(
       MaterialPageRoute(
         builder: (context) => EditJob(
           database: database,
