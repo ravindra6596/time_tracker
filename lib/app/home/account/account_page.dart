@@ -1,10 +1,12 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:time_tracker/common_widgets/alert_dialog.dart';
+import 'package:time_tracker/common_widgets/avatar.dart';
 import 'package:time_tracker/services/auth.dart';
 
 class AccounPage extends StatelessWidget {
-   Future<void> _signOut(BuildContext context) async {
+  Future<void> _signOut(BuildContext context) async {
     try {
       final auth = Provider.of<AuthBase>(context, listen: false);
       await auth.signOut();
@@ -25,14 +27,16 @@ class AccounPage extends StatelessWidget {
       _signOut(context);
     }
   }
+
   @override
   Widget build(BuildContext context) {
+    final auth = Provider.of<AuthBase>(context, listen: false);
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: Text('Account'),
         actions: <Widget>[
-         
           FlatButton(
             onPressed: () => _confirmSignOut(context),
             child: Text(
@@ -44,8 +48,32 @@ class AccounPage extends StatelessWidget {
             ),
           ),
         ],
+        bottom: PreferredSize(
+          preferredSize: Size.fromHeight(130),
+          child: _buildUserInfo(auth.currentUser),
+        ),
       ),
-     
+    );
+  }
+
+  Widget _buildUserInfo(User user) {
+    return Column(
+      children: [
+        Avatar(
+          radius: 50,
+          photoUrl: user.photoURL,
+        ),
+        SizedBox(height: 8),
+        if (user.displayName != null)
+          Text(
+            user.displayName,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 15,
+            ),
+          ),
+        SizedBox(height: 8)
+      ],
     );
   }
 }
