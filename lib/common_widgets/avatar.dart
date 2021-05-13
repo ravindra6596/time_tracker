@@ -14,8 +14,8 @@ class Avatar extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         border: Border.all(
-          color: Colors.black,
-          width: 3,
+          color: Colors.white,
+          width: 1,
         ),
         shape: BoxShape.circle,
       ),
@@ -23,7 +23,7 @@ class Avatar extends StatelessWidget {
         radius: radius,
         backgroundColor: Colors.black12,
         backgroundImage: photoUrl != null ? NetworkImage(photoUrl) : null,
-        child: photoUrl == null ? Icon(Icons.camera_alt, size: radius) : null,
+        child: photoUrl == null ? Icon(Icons.person, size: radius) : null,
       ),
     );
   }
