@@ -11,7 +11,7 @@ class EditJob extends StatefulWidget {
   const EditJob({Key key, @required this.database, this.job}) : super(key: key);
   final Database database;
   final Job job;
-  static Future<void> show(BuildContext context, {Job job}) async {
+  static Future<void> show(BuildContext context, {Job job, Database database}) async {
     final database = Provider.of<Database>(context, listen: false);
     // Which navigator should I used
     // Modal Full screen page => use  rootNavigator: true
@@ -95,7 +95,7 @@ class _EditJobState extends State<EditJob> {
         elevation: 2.0,
         title: Text(widget.job == null ? 'New Job' : 'Edit Job'),
         actions: <Widget>[
-          FlatButton(
+          TextButton(
               onPressed: _submitJob,
               child: Text(
                 'Save',

@@ -37,7 +37,7 @@ class AccounPage extends StatelessWidget {
         centerTitle: true,
         title: Text('Account'),
         actions: <Widget>[
-          FlatButton(
+          TextButton(
             onPressed: () => _confirmSignOut(context),
             child: Text(
               'Logout',
@@ -72,7 +72,7 @@ class AccounPage extends StatelessWidget {
               fontSize: 15,
             ),
           ),
-        SizedBox(height: 8)
+        SizedBox(height: 8),
       ],
     );
   }

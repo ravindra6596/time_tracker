@@ -19,17 +19,19 @@ class RaisedButtons extends StatelessWidget {
     // when action is perform this is callback
     return SizedBox(
       height: height,
-      child: RaisedButton(
-        child: child,
-        color: color,
-        disabledColor: color,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(
-              borderRadius,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: color,
+          onSurface: color,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(
+                borderRadius,
+              ),
             ),
           ),
         ),
+        child: child,
         onPressed: onPressed,
       ),
     );

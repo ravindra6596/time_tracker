@@ -1,15 +1,10 @@
-import 'dart:io';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:time_tracker/app/sign_in/email_signIn_bloc.dart';
 import 'package:time_tracker/app/sign_in/email_signIn_change_model.dart';
 import 'package:time_tracker/common_widgets/exception_alert_dialog.dart';
 import 'package:time_tracker/common_widgets/form_submit_btn.dart';
 import 'package:time_tracker/services/auth.dart';
-
-import 'email_signIn_model.dart';
 
 //EmailSignInBlac + EmailSignInForm
 //is it worth it ?
@@ -99,7 +94,7 @@ class _EmailSignInFormChangeNotifierState
       SizedBox(
         height: 8.0
       ),
-      FlatButton(
+      TextButton(
         onPressed: !model.isLoading ? _toggleFormType : null,
         child: Text(
           model.secondoryButtonText,

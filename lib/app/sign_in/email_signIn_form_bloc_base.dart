@@ -96,7 +96,7 @@ class _EmailSignInFormBlocBaseState extends State<EmailSignInFormBlocBase> {
       SizedBox(
         height: 8.0,
       ),
-      FlatButton(
+      TextButton(
         onPressed: !model.isLoading ? _toggleFormType : null,
         child: Text(
           model.secondoryButtonText,
